@@ -32,6 +32,9 @@ public class UserDTO {
     private String modified;
     private String lastLogin;
 
+    private boolean isActive;
+    private String token;
+
     @Valid
     private Set<PhoneDTO> phones = new HashSet<>();
 }
