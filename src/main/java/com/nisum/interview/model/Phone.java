@@ -14,8 +14,13 @@ public class Phone implements Serializable {
     @GeneratedValue
     private UUID phoneId;
 
+    @Column(nullable = false)
     private String number;
+
+    @Column(nullable = false)
     private String cityCode;
+
+    @Column(nullable = false)
     private String countryCode;
 
     public Phone() {}

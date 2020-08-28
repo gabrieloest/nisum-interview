@@ -1,7 +1,6 @@
 package com.nisum.interview.model;
 
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -20,8 +19,13 @@ public class User implements Serializable {
     @GeneratedValue
     private UUID userId;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
 
     @CreationTimestamp
@@ -34,6 +38,7 @@ public class User implements Serializable {
 
     private String token = UUID.randomUUID().toString();
 
+    @Column(nullable = false)
     private boolean isActive = true;
 
     @OneToMany(targetEntity=Phone.class,cascade = CascadeType.ALL,
