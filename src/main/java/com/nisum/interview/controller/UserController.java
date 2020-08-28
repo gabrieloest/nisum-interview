@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") UUID id) {
         userService.deleteById(id);
     }
