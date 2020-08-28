@@ -1,2 +1,8 @@
-package com.nisum.interview.exception;public class UserNotFoundException {
+package com.nisum.interview.exception;
+
+public class UserNotFoundException extends RuntimeException  {
+
+    public UserNotFoundException(String id){
+        super("Could not find user " + id);
+    }
 }
