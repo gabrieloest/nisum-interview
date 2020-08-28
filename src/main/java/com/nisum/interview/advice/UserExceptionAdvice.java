@@ -28,14 +28,14 @@ class UserExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler(InvalidEmailFormatException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseError invalidEmailFormatHandler(InvalidEmailFormatException ex) {
         return new ResponseError(ex.getMessage());
     }
 
     @ResponseBody
     @ExceptionHandler(InvalidPasswordFormatException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseError invalidPasswordFormatHandler(InvalidPasswordFormatException ex) {
         return new ResponseError(ex.getMessage());
     }
@@ -49,7 +49,7 @@ class UserExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     List<ResponseError> argumentNotValidHandler(MethodArgumentNotValidException ex) {
         List<ResponseError> errors = ex.getBindingResult().getAllErrors().stream().map(item -> new ResponseError(item.getDefaultMessage())).collect(Collectors.toList());
         return errors;
