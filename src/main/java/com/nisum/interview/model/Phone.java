@@ -15,19 +15,14 @@ public class Phone implements Serializable {
     private UUID phoneId;
 
     private String number;
-    private Integer cityCode;
-    private Integer countryCode;
-
-    @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
-    private User user;
+    private String cityCode;
+    private String countryCode;
 
     public Phone() {}
 
-    public Phone(String number, Integer cityCode, Integer countryCode, User user) {
+    public Phone(String number, String cityCode, String countryCode) {
         this.number = number;
         this.cityCode = cityCode;
         this.countryCode = countryCode;
-        this.user = user;
     }
 }

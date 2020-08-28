@@ -1,10 +1,14 @@
 package com.nisum.interview.model;
 
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,30 +21,33 @@ public class User implements Serializable {
     private UUID userId;
 
     private String name;
+    private String email;
     private String password;
-    private Date created;
-    private Date modified;
-    private Date lastLogin;
-    private String token;
-    private boolean isActive;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Phone> phones;
+    @CreationTimestamp
+    private LocalDateTime created;
 
-    public User() {}
+    @UpdateTimestamp
+    private LocalDateTime modified;
 
-    public User(String name, String password, String token, Set<Phone> phones) {
+    private LocalDateTime lastLogin = LocalDateTime.now();
+
+    private String token = UUID.randomUUID().toString();
+
+    private boolean isActive = true;
+
+    @OneToMany(targetEntity=Phone.class,cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Phone> phones = new HashSet<>();
+
+    public User() {
+
+    }
+
+    public User(String name, String email, String password) {
         this.name = name;
+        this.email = email;
         this.password = password;
-
-        Date now = new Date();
-        this.created = now;
-        this.modified = now;
-        this.lastLogin = now;
-
-        this.token = token;
-        this.isActive = true;
-        this.phones = phones;
     }
 
 }
