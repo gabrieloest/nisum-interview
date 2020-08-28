@@ -26,6 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.containsString;
@@ -46,10 +48,12 @@ class UserControllerTest {
     public static final String EMAIL = "john@doe.com";
     public static final String PASSWORD = "$2a$10$yrt4b.iCJYFmVgl60BWVUe3V6otOgeU1xTyG8XoCxt2yA0gpfJ3dG";
     public static final boolean ACTIVE = true;
-    public static final String CREATED = "2020-08-28T16:11:39.745";
-    public static final String MODIFIED = "2020-08-28T16:11:39.745";
-    public static final String LAST_LOGIN = "2020-08-28T16:11:39.745";
+    public static final String CREATED = "2020-08-28T16:11:39";
+    public static final String MODIFIED = "2020-08-28T16:11:39";
+    public static final String LAST_LOGIN = "2020-08-28T16:11:39";
     public static final String TOKEN = "427fe75e-2eb2-42e7-8f51-c934eca901ce";
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     private HttpHeaders headers;
 
@@ -77,20 +81,20 @@ class UserControllerTest {
         BDDMockito.given(service.save(Mockito.any(User.class))).willReturn(getMockUser());
 
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
-                    .content(getJsonPayload(ID, NAME, EMAIL, PASSWORD, ACTIVE, CREATED, MODIFIED, LAST_LOGIN, TOKEN))
+                    .content(getJsonPayload(NAME, EMAIL, PASSWORD))
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
                     .headers(headers))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.id").value(ID))
-                .andExpect(jsonPath("$.data.name").value(NAME))
-                .andExpect(jsonPath("$.data.email").value(EMAIL))
-                .andExpect(jsonPath("$.data.password").value(PASSWORD))
-                .andExpect(jsonPath("$.data.created").value(CREATED))
-                .andExpect(jsonPath("$.data.modified").value(MODIFIED))
-                .andExpect(jsonPath("$.data.lastLogin").value(LAST_LOGIN))
-                .andExpect(jsonPath("$.data.token").value(TOKEN));
+                .andExpect(jsonPath("$.id").value(ID))
+                .andExpect(jsonPath("$.name").value(NAME))
+                .andExpect(jsonPath("$.email").value(EMAIL))
+                .andExpect(jsonPath("$.password").value(PASSWORD))
+                .andExpect(jsonPath("$.created").value(CREATED))
+                .andExpect(jsonPath("$.modified").value(MODIFIED))
+                .andExpect(jsonPath("$.lastLogin").value(LAST_LOGIN))
+                .andExpect(jsonPath("$.token").value(TOKEN));
     }
 
     @Test
@@ -98,7 +102,7 @@ class UserControllerTest {
         BDDMockito.given(service.save(Mockito.any(User.class))).willReturn(getMockUser());
 
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
-                .content(getJsonPayload(ID, NAME, "email@email", PASSWORD, ACTIVE, CREATED, MODIFIED, LAST_LOGIN, TOKEN))
+                .content(getJsonPayload(NAME, "email@email", PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .headers(headers))
@@ -111,7 +115,7 @@ class UserControllerTest {
         BDDMockito.given(service.save(Mockito.any(User.class))).willReturn(getMockUser());
 
         mockMvc.perform(MockMvcRequestBuilders.post(URL)
-                .content(getJsonPayload(ID, NAME, EMAIL, "password", ACTIVE, CREATED, MODIFIED, LAST_LOGIN, TOKEN))
+                .content(getJsonPayload(NAME, EMAIL, "password"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .headers(headers))
@@ -129,8 +133,16 @@ class UserControllerTest {
 
     private User getMockUser() {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        User user = new User("Name", "email@email.com", bCryptPasswordEncoder.encode("Password1234"));
+        User user = new User();
         user.setUserId(UUID.fromString(ID));
+        user.setName(NAME);
+        user.setEmail(EMAIL);
+        user.setPassword(PASSWORD);
+        user.setActive(ACTIVE);
+        user.setCreated(LocalDateTime.parse(CREATED, formatter));
+        user.setModified(LocalDateTime.parse(MODIFIED, formatter));
+        user.setLastLogin(LocalDateTime.parse(LAST_LOGIN, formatter));
+        user.setToken(TOKEN);
         return user;
     }
 
@@ -146,6 +158,18 @@ class UserControllerTest {
         dto.setModified(modified);
         dto.setLastLogin(lastLogin);
         dto.setToken(token);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return mapper.writeValueAsString(dto);
+    }
+
+    private String getJsonPayload(String name, String email, String password) throws JsonProcessingException, JsonProcessingException {
+
+        UserDTO dto = new UserDTO();
+        dto.setName(name);
+        dto.setEmail(email);
+        dto.setPassword(password);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

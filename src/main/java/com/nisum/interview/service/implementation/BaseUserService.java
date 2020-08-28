@@ -5,6 +5,7 @@ import com.nisum.interview.exception.InvalidPasswordFormatException;
 import com.nisum.interview.exception.UserNotFoundException;
 import com.nisum.interview.model.User;
 import com.nisum.interview.repository.UserRepository;
+import com.nisum.interview.security.TokenUtils;
 import com.nisum.interview.service.UserService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,9 +24,11 @@ public class BaseUserService implements UserService {
     private final String PASSWORD_REGEX = "^(?=.*[0-9]{2,})(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).{4,}$";
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public BaseUserService(UserRepository userRepository) {
+    public BaseUserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     /**
@@ -40,9 +43,14 @@ public class BaseUserService implements UserService {
         if(!isValidPasswordFormat(user.getPassword())) {
             throw new InvalidPasswordFormatException(user.getPassword());
         }
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
         String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
+
+        String token = TokenUtils.generateToken(user.getEmail());
+
+        user.setToken(token);
+
         return userRepository.save(user);
     }
 

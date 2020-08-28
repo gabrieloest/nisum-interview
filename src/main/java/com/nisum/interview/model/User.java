@@ -36,7 +36,7 @@ public class User implements Serializable {
 
     private LocalDateTime lastLogin = LocalDateTime.now();
 
-    private String token = UUID.randomUUID().toString();
+    private String token;
 
     @Column(nullable = false)
     private boolean isActive = true;

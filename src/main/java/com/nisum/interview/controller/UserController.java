@@ -49,8 +49,8 @@ public class UserController {
             throw new EmailAlreadyInUseException(resource.getEmail());
         }
 
-        User saveUser = userService.save(convertToEntity(resource));
-        return convertToDto(saveUser);
+        User savedUser = userService.save(convertToEntity(resource));
+        return convertToDto(savedUser);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
