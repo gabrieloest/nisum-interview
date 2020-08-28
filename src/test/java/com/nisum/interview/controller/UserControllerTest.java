@@ -51,7 +51,7 @@ class UserControllerTest {
     public static final String CREATED = "2020-08-28T16:11:39";
     public static final String MODIFIED = "2020-08-28T16:11:39";
     public static final String LAST_LOGIN = "2020-08-28T16:11:39";
-    public static final String TOKEN = "427fe75e-2eb2-42e7-8f51-c934eca901ce";
+    public static final String TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huQGRvZS5jb20iLCJleHAiOjE1OTk1MTg5MzV9.ouD1SuPIPlmND5hLj_UAPggXUthzYKOkog-uBrAfdmc2PRRR71Ol4NDTpsK9c6hMKWa_zQ1jfUAp5An2cejryw";
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
